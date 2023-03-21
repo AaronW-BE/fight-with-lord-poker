@@ -431,7 +431,7 @@ picocolors@^1.0.0:
 
 pixi.js@^7.2.1:
   version "7.2.1"
-  resolved "https://registry.yarnpkg.com/pixi.js/-/pixi.js-7.2.1.tgz#1b6533ccb22f0fb59d9b4c47613e94b9576272a6"
+  resolved "https://registry.npmmirror.com/pixi.js/-/pixi.js-7.2.1.tgz#1b6533ccb22f0fb59d9b4c47613e94b9576272a6"
   integrity sha512-MDfXqHIazZa0FAcdHOcb9ix5Z6wYY+ruaJj38JwRYxWoVW/4u2LwAjTLabKbC0zKL/Y9xDPQiNNTZ8YkVOeG5g==
   dependencies:
     "@pixi/accessibility" "7.2.1"

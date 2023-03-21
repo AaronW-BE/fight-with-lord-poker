@@ -21,6 +21,68 @@ class Card {
   }
 }
 
+class Deck {
+
+  // 牌组
+  cards = [];
+
+  constructor(cards = []) {
+    this.cards = cards;
+  }
+
+  /**
+   * 比较大小
+   * @param deck
+   * @returns {number} -1, 0, 1， 小于，等于，大于
+   */
+  compare(deck) {
+    return 0;
+  }
+
+  getCards() {
+    return this.cards;
+  }
+}
+
+/**
+ * 手牌
+ */
+class HandsDeck extends Deck {
+  // 已选中出牌
+  #activePlayCards = [];
+
+  // 已打出排阻列表
+  #playedDecks = [];
+
+  constructor(cards = []) {
+    super(cards);
+  }
+
+  add(card) {
+    this.cards.push(card);
+  }
+
+  getPlayedCards() {
+    return this.#playedDecks;
+  }
+
+  // 检测是否是有效的出牌组合
+  #checkValid() {
+    return false;
+  }
+
+  play() {
+    if (!this.#checkValid()) {
+      return
+    }
+    console.table('play cards', this.#activePlayCards);
+    this.#playedDecks.push(this.#activePlayCards)
+    this.#activePlayCards = [];
+  }
+}
+
+
+
 function GenerateDeck() {
   let cards = [];
   for (let i = 0; i < DECK_TYPE.length; i++) {
@@ -64,7 +126,7 @@ function deal(cards, playerNumber) {
 
 
 
-function App() {
+export function App() {
   let decks = GenerateDeck();
   let shuffled = shuffle(decks)
   let lordsCards = [];
@@ -75,7 +137,7 @@ function App() {
   console.log('lords cards');
   console.table(lordsCards)
 
-  console.dir(deal(shuffled, 3));
+  console.table(deal(shuffled, 3));
 
 }
 
