@@ -3,6 +3,40 @@ let SUITE_TYPE = [
   '♠️','♣️', '♥️', '♦️'
 ];
 
+let DECK_SET_TYPES = {
+  single: {
+    min: 1,
+    max: 1
+  },
+  pair: {
+    min: 2,
+    max: 2
+  },
+  linked_pair: {
+    min: 6,
+  },
+  three_with_one: {
+    min: 4,
+    max: 4
+  },
+  three_with_two: {
+    min: 5,
+    max: 5
+  },
+  flying: {
+    min: 6
+  },
+  bomb: {
+    min: 4
+  },
+  king_bomb: {
+    min: 2
+  },
+  straight: {
+    min: 5
+  },
+};
+
 class Card {
   constructor(name, suite, weight) {
     this.name = name;
@@ -134,10 +168,18 @@ export function App() {
   lordsCards.push(shuffled.pop())
   lordsCards.push(shuffled.pop())
 
-  console.log('lords cards');
-  console.table(lordsCards)
+  let lordHiddenDeck = new Deck(lordsCards);
+  console.table(lordHiddenDeck);
 
-  console.table(deal(shuffled, 3));
+  const dealResult = deal(shuffled, 3);
+  const playerDecks = [];
+  for (let i = 0; i < dealResult.length; i++) {
+    playerDecks.push(new HandsDeck(dealResult[i]));
+  }
+
+  console.table(playerDecks);
+
+  console.log(playerDecks[0]);
 
 }
 
