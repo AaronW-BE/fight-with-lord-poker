@@ -1,5 +1,6 @@
 import {nanoid} from 'nanoid';
 import _ from 'lodash';
+import {Card} from "./core/Card.js";
 
 let DECK_TYPE = ['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A', '2', 'BLACK JOKER', 'RED JOKER'];
 let SUITE_TYPE = [
@@ -10,7 +11,7 @@ let DECK_SET_TYPES = {
   _length: (cards, target) => {
     return target.max ? [target.min, target.max].indexOf(cards.length) !== -1 : cards.length >= target.min;
   },
-  // check if it's a serial pair
+  // check if it's a serial deck
   _serial: (cards) => {
     let carsWeight = cards.map(c => c.weight);
     let weightSet = new Set(carsWeight);
@@ -22,7 +23,7 @@ let DECK_SET_TYPES = {
     cards.sort((a, b) => {
       return a.weight - b.weight
     })
-    return cards[cards.length - 1].weight - cards[0].weight === cards.length;
+    return cards[cards.length - 1].weight - cards[0].weight === cards.length -1;
   },
   single: {
     min: 1,
@@ -41,23 +42,22 @@ let DECK_SET_TYPES = {
     }
   },
   linked_pair: { // 连对
-    min: 6,
+    min: 4,
     validator(cards) {
       let lenValid = DECK_SET_TYPES._length(cards, this);
       if (!lenValid) return false;
 
       // check any has a pair card
-      for (let i = 0; i < cards.length - 1; i++) {
-        let hasPair = false;
-        for (let j = i + 1; j < cards.length; j++) {
-          if (cards[i].equalWeight(cards[j])) {
-            hasPair = true;
-          }
+      let pairCardCount = {};
+      for (let i = 0; i < cards.length; i++) {
+        if (!pairCardCount[cards[i].weight]) {
+          pairCardCount[cards[i].weight] = 0;
         }
-        if (!hasPair) {
-          return false;
-        }
+        pairCardCount[cards[i].weight]++;
       }
+      let isPaired = Object.values(pairCardCount).every(item => item === 2);
+
+      if (!isPaired) return false;
 
       // distinct
       let distinctCards = [];
@@ -90,47 +90,37 @@ let DECK_SET_TYPES = {
   king_bomb: {
     min: 2
   },
+  // 顺子
   straight: {
-    min: 5
+    min: 5,
+    validator(cards) {
+      let lenValid = DECK_SET_TYPES._length(cards, this);
+      if (!lenValid) return false;
+
+      return DECK_SET_TYPES._serial(cards);
+    },
   },
 };
 
-let card3_1 = new Card("3", "", 0);
-let card3_2 = new Card("3", "", 0);
 let card4_1 = new Card("4", "", 1);
 let card4_2 = new Card("4", "", 1);
 
-let cards = [card3_1, card3_2, card4_1, card4_2];
-let isValid = DECK_SET_TYPES.linked_pair.validator(cards);
-console.log('isValid', isValid);
+let card5_1 = new Card("5", "", 2);
+let card5_2 = new Card("5", "", 2);
 
-class Card {
-  constructor(name, suite, weight) {
-    this.id = nanoid();
-    this.name = name;
-    this.suite = suite;
-    this.weight = weight;
-  }
+let card6_1 = new Card("6", "", 3);
+let card7_1 = new Card("7", "", 4);
+let card8_1 = new Card("8", "", 5);
 
-  compare(card) {
-    if (card.weight === this.weight) return 0;
-    if (this.weight === card.weight) return 1;
-    else return -1;
-  }
 
-  // for card obj detect
-  equal(other) {
-    return this.id === other.id;
-  }
+let cards = [card4_1, card4_2, card5_1, card5_2];
+console.log('isValid linked pairs', DECK_SET_TYPES.linked_pair.validator(cards));
 
-  equalWeight(other) {
-    return this.weight === other.weight;
-  }
+let serialCards = [card4_1, card5_1, card6_1, card7_1, card8_1];
 
-  toString() {
-    return this.suite + ' ' + this.name
-  }
-}
+console.log('isValid straight', DECK_SET_TYPES.straight.validator(serialCards));
+
+
 
 class Deck {
 
